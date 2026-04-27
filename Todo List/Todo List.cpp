@@ -4,7 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
-
+#include <string>
 
 enum class Priority {
     Low,
@@ -24,7 +24,7 @@ class Task {
 
     public:
         // constructor
-        Task(std::string t, Priority p) : title(t), priority(p) {
+        Task(std::string t, Priority p) : id(nextId++), title(t), priority(p) {
             auto now = std::chrono::system_clock::now();
             time = std::format("{:%Y-%m-%d %H:%M:%S}", now);
         }
@@ -38,11 +38,15 @@ class Task {
             priority = p;
         }
 
-        // methodes
-        void printTask(){
-            std::cout << "Task: " << title << " | Created at: " << time << std::endl;
+        // getters
+        int getId() {
+            return id;
         }
 
+        // methodes
+        void printTask(){
+            std::cout << "id: " << id << " | Task: " << title << " | Created at: " << time << std::endl;
+        }
         
 };
 
@@ -95,7 +99,7 @@ int main()
                 int p;
                 Priority priority;
                 std::cin.ignore();
-                std::cout << "enter title: \n";
+                std::cout << "enter title: ";
                 std::getline(std::cin, title);
 
                 std::cout << "enter priority: \n";
@@ -106,10 +110,10 @@ int main()
                 std::cin >> p;
 
                 switch (p) {
-                case 1: priority = Priority::Low; break;
-                case 2: priority = Priority::Medium; break;
-                case 3: priority = Priority::High; break;
-                default: priority = Priority::Low; break;
+                    case 1: priority = Priority::Low; break;
+                    case 2: priority = Priority::Medium; break;
+                    case 3: priority = Priority::High; break;
+                    default: priority = Priority::Low; break;
                 }
                 Task new_task = Task(title, priority);
 
@@ -120,7 +124,21 @@ int main()
             }
             case 3: {
                 show_tasks(tasks);
-                std::cout << "entrez l'id de cette task";
+                int id;
+                std::cout << "entrez l'id de cette task: ";
+                std::cin >> id;
+
+                if (id > tasks.size()) {
+                    std::cout << "id pas disponible\n";
+                }else {
+                    for (int i = 0; i < tasks.size(); i++) {
+                        if (tasks[i].getId() == id) {
+                            tasks.erase(tasks.begin() + i);
+                            std::cout << "task deleted succesfully\n";
+                        }
+                    }
+                }
+                
                 break;
             }
         }
