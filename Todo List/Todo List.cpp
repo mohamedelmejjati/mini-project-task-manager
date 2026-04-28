@@ -12,6 +12,11 @@ enum class Priority {
     High
 };
 
+enum class Status {
+    Afaire,
+    EnCours,
+    Terminee
+};
 
 
 class Task {
@@ -21,12 +26,14 @@ class Task {
         std::string title;
         std::string time;
         Priority priority;
+        Status status;
 
     public:
         // constructor
         Task(std::string t, Priority p) : id(nextId++), title(t), priority(p) {
             auto now = std::chrono::system_clock::now();
             time = std::format("{:%Y-%m-%d %H:%M:%S}", now);
+            status = Status::EnCours;
         }
 
         // setters
@@ -38,6 +45,10 @@ class Task {
             priority = p;
         }
 
+        void SetStatus(Status s) {
+            status = s;
+        }
+
         // getters
         int getId() {
             return id;
@@ -45,7 +56,16 @@ class Task {
 
         // methodes
         void printTask(){
-            std::cout << "id: " << id << " | Task: " << title << " | Created at: " << time << std::endl;
+            std::cout << "id: " << id << " | Task: " << title << " | Created at: " << time << " | Status: " << StatusToString(status) << std::endl;
+        }
+
+        std::string StatusToString(Status s) {
+            switch (s) {
+                case Status::Afaire:   return "A faire";
+                case Status::EnCours:  return "En cours";
+                case Status::Terminee: return "Terminee";
+                default:               return "A faire";
+            }
         }
         
 };
@@ -75,19 +95,18 @@ int main()
     std::vector<Task> tasks;
 
     while (1) {
-        std::cout << "-------------------------------|\n";
-        std::cout << "|    GESTIONNAIRE DE TACHES    |\n";
-        std::cout << "|1. Voir les taches            |\n";
-        std::cout << "|2. Ajouter une tache          |\n";
-        std::cout << "|3. Supprimer une tache        |\n";
-        std::cout << "|4. Quitter                    |\n";
-        std::cout << "|------------------------------|\n";
+        std::cout << "----------------------------------|\n";
+        std::cout << "|    GESTIONNAIRE DE TACHES       |\n";
+        std::cout << "|1. Voir les taches               |\n";
+        std::cout << "|2. Ajouter une tache             |\n";
+        std::cout << "|3. Supprimer une tache           |\n";
+        std::cout << "|4. Changer status du tache       |\n";
+        std::cout << "|5. Quitter                       |\n";
+        std::cout << "|---------------------------------|\n";
 
         int choice;
         std::cout << "choissisez: ";
         std::cin >> choice;
-
-        std::cout << "your choice is: " << choice << "\n";
 
         switch (choice) {
             case 1: {
@@ -128,7 +147,7 @@ int main()
                 std::cout << "entrez l'id de cette task: ";
                 std::cin >> id;
 
-                if (id > tasks.size()) {
+                if (id > tasks.size() || id < 0) {
                     std::cout << "id pas disponible\n";
                 }else {
                     for (int i = 0; i < tasks.size(); i++) {
@@ -140,6 +159,47 @@ int main()
                 }
                 
                 break;
+            }
+            case 4: {
+                show_tasks(tasks);
+                int id;
+                std::cout << "entrez l'id de cette task: ";
+                std::cin >> id;
+                if (id > tasks.size() || id < 0) {
+                    std::cout << "id pas disponible\n";
+                }else {
+                    int choice;
+                    std::cout << "choisis la nouvelle status:\n";
+                    std::cout << "1. Afaire\n";
+                    std::cout << "2. EnCours\n";
+                    std::cout << "3. Terminee\n";
+                    std::cout << "votre choix: ";
+                    std::cin >> choice;
+                    for (int i = 0; i < tasks.size(); i++) {
+                        if (tasks[i].getId() == id) {
+                            switch (choice) {
+                                case 1: {
+                                    tasks[i].SetStatus(Status::Afaire);
+                                    break;
+                                }
+                                case 2: {
+                                    tasks[i].SetStatus(Status::EnCours);
+                                    break;
+                                }
+                                case 3: {
+                                    tasks[i].SetStatus(Status::Terminee);
+                                    break;
+                                }
+                            }
+                            std::cout << "Status changed Succesfully";
+                        }
+                    }
+                }
+                break;
+            }
+            case 5: {
+                std::cout << "Bye!\n";
+                std::exit(1);
             }
         }
     }
