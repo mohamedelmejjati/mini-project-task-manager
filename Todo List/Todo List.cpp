@@ -73,6 +73,10 @@ class Task {
             return id;
         }
 
+        Category getCategory() {
+            return category;
+        }
+
         // methodes
         void printTask() {
             std::cout << "id: " << id
@@ -155,6 +159,35 @@ void delete_task(int id, std::vector<Task>& tasks) {
     }
 }
 
+void tasks_by_category(std::vector<Task>& tasks) {
+    int c;
+    std::cout << "enter category: \n";
+    std::cout << "1. Travail\n";
+    std::cout << "2. Personnel\n";
+    std::cout << "3. Urgent\n";
+    std::cout << "4. Autre\n";
+    std::cout << "votre choix: ";
+    std::cin >> c;
+
+    Category cat;
+    if (c == 1) cat = Category::Travail;
+    else if (c == 2) cat = Category::Personnel;
+    else if (c == 3) cat = Category::Urgent;
+    else cat = Category::Autre;
+
+    bool found = false;
+    for (int i = 0; i < tasks.size(); i++) {
+        if (tasks[i].getCategory() == cat) {
+            tasks[i].printTask();
+            found = true;
+        }
+    }
+    if (!found) {
+        std::cout << "|----------------------|\n";
+        std::cout << "|   No tasks to show   |\n";
+        std::cout << "|----------------------|\n";
+    }
+}
 
 //void modify_task(Field field, int id, std::vector<Task> tasks) {
 void modify_task(Field field, int id, std::vector<Task>& tasks) {
@@ -272,7 +305,8 @@ int main()
         std::cout << "|2. Ajouter une tache             |\n";
         std::cout << "|3. Supprimer une tache           |\n";
         std::cout << "|4. Modifier une tache            |\n";
-        std::cout << "|5. Quitter                       |\n";
+        std::cout << "|5. Sort By Category              |\n";
+        std::cout << "|6. Quitter                       |\n";
         std::cout << "|---------------------------------|\n";
 
         int choice;
@@ -380,6 +414,10 @@ int main()
                 break;
             }
             case 5: {
+                tasks_by_category(tasks);
+                break;
+            }
+            case 6: {
                 std::cout << "Bye!\n";
                 std::exit(1);
             }
