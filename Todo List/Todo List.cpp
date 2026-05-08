@@ -4,8 +4,9 @@
 #include <string>
 #include <format>
 #include <algorithm>
-#include <iostream>
 #include <fstream>
+#include <sstream>
+#include <limits>
 
 // enum pour chaque propriété de classe
 
@@ -240,7 +241,7 @@ Priority p_input() {
 }
 
 Field f_input() {
-    Field field;
+    Field field = Field::title;
     int f;
 
     std::cout << "1. Title\n";
@@ -255,6 +256,7 @@ Field f_input() {
     case 2: field = Field::status; break;
     case 3: field = Field::priority; break;
     case 4: field = Field::category; break;
+    default: field = Field::title; break;
     }
 
     return field;
@@ -327,7 +329,7 @@ void filter_by(Field field, std::vector<Task>& tasks) {
 
 // méthode pour modifier un champ de tâche (titre, statut, priorité, catégorie)
 void modify_task(Field field, int id, std::vector<Task>& tasks) {
-    int index;
+    int index = -1;
     if (check_id(id, tasks) == 1) {
         std::cout << "id pas disponible\n";
         return;
@@ -336,6 +338,7 @@ void modify_task(Field field, int id, std::vector<Task>& tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks[i].getId() == id) {
                 index = i;
+                break;
             }
         }
     }
